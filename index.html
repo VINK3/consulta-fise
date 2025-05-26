@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta Estado FISE</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f8ff;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    #resultado {
+      margin-top: 2rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Consulta Estado FISE</h1>
+  <input type="text" id="dni" placeholder="Ingresa tu DNI">
+  <br>
+  <button onclick="buscar()">Buscar</button>
+  <div id="resultado"></div>
+
+  <script>
+    const SHEET_ID = '1uVVJ2H0AfM08gxz15OJXRwQupMrWLJQH';
+    const SHEET_NAME = 'Hoja1';
+
+    async function buscar() {
+      const dni = document.getElementById('dni').value.trim();
+      if (!dni) return alert("Ingrese un DNI válido");
+
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+      
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+
+        let encontrado = false;
+        for (const row of rows) {
+          const dniValue = row.c[0]?.v;
+          const nombre = row.c[1]?.v;
+          const estado = row.c[2]?.v;
+
+          if (dniValue == dni) {
+            document.getElementById("resultado").innerHTML =
+              `<p>Nombre: ${nombre}</p><p>Estado FISE: ${estado}</p>`;
+            encontrado = true;
+            break;
+          }
+        }
+
+        if (!encontrado) {
+          document.getElementById("resultado").innerHTML = "DNI no encontrado.";
+        }
+      } catch (e) {
+        document.getElementById("resultado").innerHTML = "Error al consultar.";
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>
