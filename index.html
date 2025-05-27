@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta Estado FISE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('electrocentro.jpg') no-repeat center center fixed;
+            background-size: contain;
+            background-color: #003366;
+            margin: 0;
+            padding: 0;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+        }
+        input, button {
+            width: 80%;
+            padding: 10px;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #fff;
+        }
+        th {
+            background-color: #004080;
+        }
+        #loading {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Consulta Estado FISE</h1>
+        <input type="text" id="dniInput" placeholder="Ingrese su DNI">
+        <br>
+        <button onclick="buscar()">Consultar</button>
+        <div id="loading">Buscando...</div>
+        <table id="resultado" style="display:none;">
+            <thead>
+                <tr>
+                    <th>DNI</th>
+                    <th>TIPO DE BENEFICIARIO</th>
+                    <th>ESTADO FISE</th>
+                    <th>OBSERVACIÓN</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const datos = [
+            { dni: "12345678", tipo: "Directo", estado: "Activo", observacion: "Vigente" },
+            { dni: "87654321", tipo: "Indirecto", estado: "Inactivo", observacion: "Revisión" }
+        ];
+
+        function buscar() {
+            const input = document.getElementById("dniInput").value.trim();
+            const resultado = document.getElementById("resultado");
+            const cuerpo = document.getElementById("resultBody");
+            const loading = document.getElementById("loading");
+
+            resultado.style.display = "none";
+            cuerpo.innerHTML = "";
+            loading.style.display = "block";
