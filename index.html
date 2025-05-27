@@ -1,72 +1,84 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Consulta Estado FISE</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f0f8ff;
-      padding: 2rem;
-      text-align: center;
-    }
-    input, button {
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-top: 1rem;
-    }
-    #resultado {
-      margin-top: 2rem;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Consulta Estado FISE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('electrocentro.jpg') no-repeat center center fixed;
+            background-size: contain;
+            background-color: #003366;
+            margin: 0;
+            padding: 0;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+        }
+        input, button {
+            width: 80%;
+            padding: 10px;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #fff;
+        }
+        th {
+            background-color: #004080;
+        }
+        #loading {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Consulta Estado FISE</h1>
-  <input type="text" id="dni" placeholder="Ingresa tu DNI">
-  <br>
-  <button onclick="buscar()">Buscar</button>
-  <div id="resultado"></div>
+    <div class="container">
+        <h1>Consulta Estado FISE</h1>
+        <input type="text" id="dniInput" placeholder="Ingrese su DNI">
+        <br>
+        <button onclick="buscar()">Consultar</button>
+        <div id="loading">Buscando...</div>
+        <table id="resultado" style="display:none;">
+            <thead>
+                <tr>
+                    <th>DNI</th>
+                    <th>TIPO DE BENEFICIARIO</th>
+                    <th>ESTADO FISE</th>
+                    <th>OBSERVACIÓN</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+            </tbody>
+        </table>
+    </div>
 
-  <script>
-    const SHEET_ID = '1uVVJ2H0AfM08gxz15OJXRwQupMrWLJQH';
-    const SHEET_NAME = 'Hoja1';
+    <script>
+        const datos = [
+            { dni: "12345678", tipo: "Directo", estado: "Activo", observacion: "Vigente" },
+            { dni: "87654321", tipo: "Indirecto", estado: "Inactivo", observacion: "Revisión" }
+        ];
 
-    async function buscar() {
-      const dni = document.getElementById('dni').value.trim();
-      if (!dni) return alert("Ingrese un DNI válido");
+        function buscar() {
+            const input = document.getElementById("dniInput").value.trim();
+            const resultado = document.getElementById("resultado");
+            const cuerpo = document.getElementById("resultBody");
+            const loading = document.getElementById("loading");
 
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
-      
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        const rows = json.table.rows;
-
-        let encontrado = false;
-        for (const row of rows) {
-          const dniValue = row.c[0]?.v;
-          const nombre = row.c[1]?.v;
-          const estado = row.c[2]?.v;
-
-          if (dniValue == dni) {
-            document.getElementById("resultado").innerHTML =
-              `<p>Nombre: ${nombre}</p><p>Estado FISE: ${estado}</p>`;
-            encontrado = true;
-            break;
-          }
-        }
-
-        if (!encontrado) {
-          document.getElementById("resultado").innerHTML = "DNI no encontrado.";
-        }
-      } catch (e) {
-        document.getElementById("resultado").innerHTML = "Error al consultar.";
-        console.error(e);
-      }
-    }
-  </script>
-</body>
-</html>
+            resultado.style.display = "none";
+            cuerpo.innerHTML = "";
+            loading.style.display = "block";
