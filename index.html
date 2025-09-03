@@ -79,7 +79,7 @@
       cuerpo.innerHTML = "";
       loading.style.display = "block";
 
-      fetch(`https://script.google.com/macros/s/AKfycbyFmfK_2Kqd7AugQn1UhPsLABB35_O_u0acC8rYZgKwNiCZtCqdMduoVqDa0QIo0aQ/exec?dni=${dni}`)
+      fetch(`https://script.google.com/macros/s/AKfycbw4rYf-VI_RJ2E8ugv75LWXb42jwIbxpNkslVrKGGykCEIspT0aKEEZbODEFkYBXZfu/exec?dni=${dni}`)
         .then(response => response.json())
         .then(data => {
           loading.style.display = "none";
